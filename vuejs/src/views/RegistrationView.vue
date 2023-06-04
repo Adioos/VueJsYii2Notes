@@ -4,7 +4,7 @@
     <form @submit.prevent="register" action="">
       <div v-if="errors" class="errors">
         <p v-for="(error, field) in errors" :key="field">
-          {{error[0]}}
+          {{ error[0] }}
         </p>
       </div>
       <input type="text" v-model="form.username" placeholder="Ваш логин"><br>
@@ -17,9 +17,11 @@
 </template>
 
 <script>
+import authService from "@/services/auth.service";
+
 export default {
   name: "RegistrationView",
-  data(){
+  data() {
     return {
       form: {
         username: '',
@@ -29,6 +31,16 @@ export default {
       errors: null
     }
   },
+  methods: {
+    async register() {
+      const {success, errors} = await authService.register(this.form);
+      if (success) {
+        this.$router.push({name: 'home'})
+      } else {
+        this.errors = errors;
+      }
+    }
+  }
 }
 </script>
 

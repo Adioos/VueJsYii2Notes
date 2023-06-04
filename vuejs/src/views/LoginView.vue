@@ -5,7 +5,7 @@
       <form @submit.prevent="login" action="">
         <div v-if="errors" class="errors">
           <p v-for="(error, field) in errors" :key="field">
-            {{error[0]}}
+            {{ error[0] }}
           </p>
         </div>
         <input type="text" v-model="form.username" placeholder="Ваш логин"><br>
@@ -18,9 +18,13 @@
 </template>
 
 <script>
+
+import axios from 'axios';
+import authService from "@/services/auth.service";
+
 export default {
   name: "LoginView",
-  data(){
+  data() {
     return {
       form: {
         username: '',
@@ -30,8 +34,14 @@ export default {
     }
   },
   methods: {
-    login(){
+    async login() {
       console.log("Login", this.form);
+      const {success, errors} = await authService.login(this.form);
+      if (success){
+        this.$router.push({name: 'home'})
+      } else {
+        this.errors = errors;
+      }
     }
   }
 }
